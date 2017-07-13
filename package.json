@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/yellowb/n-blog/issues"
   },
-  "homepage": "https://github.com/yellowb/n-blog#readme"
+  "homepage": "https://github.com/yellowb/n-blog#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
 }
