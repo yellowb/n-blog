@@ -1,7 +1,7 @@
 {
-  "name": "n-blog",
+  "name": "yb-blog",
   "version": "1.0.0",
-  "description": "n-blog",
+  "description": "yb's simple blog",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

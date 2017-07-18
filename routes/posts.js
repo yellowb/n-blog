@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var PostModel = require('../models/posts');
+var CommentModel = require('../models/comments');
 
 var checkLogin = require('../middlewares/check').checkLogin;
 
@@ -68,16 +69,19 @@ router.get('/:postId', function (req, res, next) {
 
     Promise.all([
             PostModel.getPostById(postId),// 获取文章信息
+            CommentModel.getComments(postId),// 获取该文章所有留言
             PostModel.incPv(postId)// pv 加 1
         ])
         .then(function (result) {
             var post = result[0];
+            var comments = result[1];
             if (!post) {
                 throw new Error('该文章不存在');
             }
 
             res.render('post', {
-                post: post
+                post: post,
+                comments: comments
             });
         })
         .catch(next);
@@ -135,12 +139,49 @@ router.get('/:postId/remove', checkLogin, function (req, res, next) {
 
 // POST /posts/:postId/comment 创建一条留言
 router.post('/:postId/comment', checkLogin, function (req, res, next) {
-    res.send(req.flash());
+    var author = req.session.user._id;
+    var postId = req.params.postId;
+    var content = req.fields.content;
+
+    // Verify correctness
+    try {
+        if (!content.length) {
+            throw new Error('请填写留言内容');
+        }
+    }
+    catch (e) {
+        req.flash('error', e.message);
+        return res.redirect('back');
+    }
+
+    var comment = {
+        author: author,
+        content: content,
+        postId: postId
+    };
+
+    CommentModel.create(comment)
+        .then(function (result) {
+            req.flash('success', '发表留言成功');
+            // 发表成功后跳转到该文章页
+            res.redirect(`/posts/${postId}`);
+        })
+        .catch(next);
 });
 
 // GET /posts/:postId/comment/:commentId/remove 删除一条留言
 router.get('/:postId/comment/:commentId/remove', checkLogin, function (req, res, next) {
-    res.send(req.flash());
+    var author = req.session.user._id;
+    var postId = req.params.postId;
+    var commentId = req.params.commentId;
+
+    CommentModel.delCommentById(commentId, author)
+        .then(function () {
+            req.flash('success', '删除留言成功');
+            // 删除成功后跳转到主页
+            res.redirect(`/posts/${postId}`);
+        })
+        .catch(next);
 });
 
 module.exports = router;
