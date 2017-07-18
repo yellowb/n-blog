@@ -59,6 +59,3 @@ typings/
 
 
 .idea/**
-public/img/*.jpg
-public/img/*.png
-public/img/*.gif
