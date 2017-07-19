@@ -4,6 +4,8 @@
   "description": "yb's simple blog",
   "main": "index.js",
   "scripts": {
+    "start": "pm2 start index.js --node-args='--harmony' --name 'ybblog'",
+    "stop": "pm2 stop ybblog",
     "test": "node --harmony ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha"
   },
   "repository": {
