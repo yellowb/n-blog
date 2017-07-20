@@ -23,6 +23,8 @@ a:hover {
     float: right;
 }
 
+a.avatar:hover {text-decoration:none;}
+
 /* ---------- nav ---------- */
 
 .nav {
